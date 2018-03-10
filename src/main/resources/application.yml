@@ -13,4 +13,4 @@ spring:
       uri: mongodb+srv://jiniguez:jig30592@cluster0-cknds.mongodb.net/test
 # HTTP Server
 server: 
-  port: 8081
+  port: 5000

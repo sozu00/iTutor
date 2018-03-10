@@ -27,7 +27,7 @@ public class UserController {
 	@RequestMapping(method = {RequestMethod.GET})
 	public List<User> findAll(@RequestParam(required=false) Integer page,
 			@RequestParam(required = false) Integer size){
-		log.info(String.format("Buscando todos los useros de la pagina %d de tamaño %d",page,size));
+		log.info(String.format("Buscando todos los users de la pagina %d de tamaño %d",page,size));
 		return userService.findAll(page, size);
 	}
 	
