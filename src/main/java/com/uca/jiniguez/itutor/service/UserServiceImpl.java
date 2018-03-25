@@ -60,4 +60,15 @@ public class UserServiceImpl implements UserService{
 		else
 			throw new NotFoundException();
 	}
+
+	@Override
+	public List<User> validateEmail(String email, String pwd) {
+		User a = userDAO.findByEmail(email);
+		final List<User> finalList = new ArrayList<>();
+		
+		if(a.getPassword() == null || a.getPassword().equals(pwd))
+			finalList.add(a);
+		
+		return finalList;
+	}
 }

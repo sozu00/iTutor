@@ -8,4 +8,5 @@ import com.uca.jiniguez.itutor.model.User;
 @Repository
 public interface UserDAO extends MongoRepository<User, String>{
 
+    public User findByEmail(String email);
 }

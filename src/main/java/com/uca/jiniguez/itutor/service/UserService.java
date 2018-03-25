@@ -13,5 +13,6 @@ public interface UserService {
 	User create(User user);
 	void update(String id, User user) throws NotFoundException;
 	void delete(String id) throws NotFoundException;
+	List<User> validateEmail(String email, String pwd);
 
 }
