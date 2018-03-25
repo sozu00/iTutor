@@ -22,10 +22,8 @@ public class UserServiceImpl implements UserService{
 	private UserDAO userDAO;
 	
 	@Override
-	public List<User> findAll(Integer page, Integer size) {
-		Integer p = Optional.ofNullable(page).orElse(Constants.DEFAULT_PAGE);
-		Integer s = Optional.ofNullable(size).orElse(Constants.DEFAULT_SIZE);
-		final Iterable<User> findAll = userDAO.findAll(PageRequest.of(p, s));
+	public List<User> findAll() {
+		final Iterable<User> findAll = userDAO.findAll();
 		final List<User> finalList = new ArrayList<>();
 		findAll.forEach(a->finalList.add(a));
 		

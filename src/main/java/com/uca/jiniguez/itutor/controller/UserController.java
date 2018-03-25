@@ -14,9 +14,7 @@ import com.uca.jiniguez.itutor.model.User;
 import com.uca.jiniguez.itutor.service.UserService;
 
 import exception.NotFoundException;
-import lombok.extern.java.Log;
 
-@Log
 @RestController
 @RequestMapping(value = "/user")
 public class UserController {
@@ -26,24 +24,14 @@ public class UserController {
 	
 	@RequestMapping(method = {RequestMethod.GET})
 	public List<User> findUsers(
-			@RequestParam(required=false) Integer page,
-			@RequestParam(required = false) Integer size,
 			@RequestParam(required = false) String email,
 			@RequestParam(required = false) String pwd
 			) throws NotFoundException{
 		
-		
-		if(page!=null || size!=null) {
-			log.info(String.format("Buscando todos los users de la pagina %d de tamaño %d",page,size));
-			return findAll(page,size);
-		}
-		
-		else if(email!=null) {
+		if(email!=null)
 			return findByEmail(email, pwd);
-		}
-		
 		else
-			throw new NotFoundException();
+			return userService.findAll();
 	}
 	
 	@RequestMapping(method = {RequestMethod.GET}, value = "/{userID}")
@@ -64,10 +52,6 @@ public class UserController {
 	@RequestMapping(method = {RequestMethod.DELETE}, value = "/{userID}")
 	public void delete(@PathVariable String userID) throws NotFoundException {
 		userService.delete(userID);
-	}
-	
-	private List<User> findAll(Integer page, Integer size){
-		return userService.findAll(page, size);
 	}
 	
 	private List<User> findByEmail(String email, String pwd){
