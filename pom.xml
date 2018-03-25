@@ -5,7 +5,7 @@
 
 	<groupId>com.uca.jiniguez</groupId>
 	<artifactId>itutor</artifactId>
-	<version>0.0.1</version>
+	<version>0.0.2</version>
 	<packaging>jar</packaging>
 
 	<name>itutor</name>
