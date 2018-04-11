@@ -57,4 +57,9 @@ public class UserController {
 	private List<User> findByEmail(String email, String pwd){
 		return userService.validateEmail(email, pwd);
 	}
+	
+	@RequestMapping(method = {RequestMethod.GET}, value = "/{userID}/alumns")
+	public List<User> findAlumns(@PathVariable String userID) throws NotFoundException{
+		return userService.findAlumns(userID);
+	}
 }

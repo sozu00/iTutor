@@ -69,4 +69,12 @@ public class UserServiceImpl implements UserService{
 		
 		return finalList;
 	}
+
+	@Override
+	public List<User> findAlumns(String userId) throws NotFoundException {
+		final User a = userDAO.findById(userId).orElseThrow(NotFoundException::new);
+		final List<User> finalList = new ArrayList<>();
+		a.getAlumns().forEach(s->finalList.add(userDAO.findById(userId).orElse(null)));
+		return finalList;
+	}
 }

@@ -29,6 +29,8 @@ public class User implements Serializable{
 	private String phoneNum;
 	private String password;
 	
+	private List<String> alumns = new ArrayList<>();
+	private List<String> teachers = new ArrayList<>();
 	//private List<User> alumns = new ArrayList<>();
 	//private List<User> teachers = new ArrayList<>();
 }
