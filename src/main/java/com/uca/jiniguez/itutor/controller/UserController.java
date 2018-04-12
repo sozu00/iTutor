@@ -40,7 +40,7 @@ public class UserController {
 	}
 	
 	@RequestMapping(method = {RequestMethod.POST})
-	public User create(@RequestBody User user) {
+	public User create(@RequestBody User user) throws NotFoundException {
 		return userService.create(user);
 	}
 	
@@ -61,5 +61,25 @@ public class UserController {
 	@RequestMapping(method = {RequestMethod.GET}, value = "/{userID}/alumns")
 	public List<User> findAlumns(@PathVariable String userID) throws NotFoundException{
 		return userService.findAlumns(userID);
+	}
+	
+	@RequestMapping(method = {RequestMethod.PUT}, value = "/{userID}/addTeacher/{teacherID}")
+	public void addTeacher(@PathVariable String userID, @PathVariable String teacherID) throws NotFoundException {
+		userService.addTeacher(userID, teacherID);
+	}
+	
+	@RequestMapping(method = {RequestMethod.PUT}, value = "/{userID}/addAlumn/{alumnID}")
+	public void addAlumn(@PathVariable String userID, @PathVariable String alumnID) throws NotFoundException {
+		userService.addAlumn(userID, alumnID);
+	}
+	
+	@RequestMapping(method = {RequestMethod.PUT}, value = "/{userID}/removeTeacher/{teacherID}")
+	public void removeTeacher(@PathVariable String userID, @PathVariable String teacherID) throws NotFoundException {
+		userService.removeTeacher(userID, teacherID);
+	}
+	
+	@RequestMapping(method = {RequestMethod.PUT}, value = "/{userID}/removeAlumn/{alumnID}")
+	public void removeAlumn(@PathVariable String userID, @PathVariable String alumnID) throws NotFoundException {
+		userService.removeAlumn(userID, alumnID);
 	}
 }

@@ -4,7 +4,10 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.persistence.Column;
+
 import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import lombok.Data;
@@ -23,14 +26,14 @@ public class User implements Serializable{
 	@Id
 	private String id;
 	
+	@Indexed(unique=true)
+	private String email;
+	
 	private String firstName;
 	private String lastName;
-	private String email;
 	private String phoneNum;
 	private String password;
 	
 	private List<String> alumns = new ArrayList<>();
 	private List<String> teachers = new ArrayList<>();
-	//private List<User> alumns = new ArrayList<>();
-	//private List<User> teachers = new ArrayList<>();
 }
