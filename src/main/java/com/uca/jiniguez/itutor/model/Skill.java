@@ -2,7 +2,8 @@ package com.uca.jiniguez.itutor.model;
 
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 import javax.persistence.FetchType;
 import javax.persistence.Id;
@@ -28,11 +29,9 @@ public class Skill implements Serializable{
 	@Id
 	private String id;
 	
-	@Indexed(unique=true)
+	@Indexed(unique=true, sparse=true)
 	private String skillName;
 	
-	private Integer price;
-	
 	@ManyToMany(fetch=FetchType.LAZY)
-	private List<User> teachers = new ArrayList<>();
+	private Set<User> teachers = new HashSet<>();
 }

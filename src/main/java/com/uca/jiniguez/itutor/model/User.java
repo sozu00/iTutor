@@ -1,12 +1,13 @@
 package com.uca.jiniguez.itutor.model;
 
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 import javax.persistence.FetchType;
 import javax.persistence.Id;
 import javax.persistence.ManyToMany;
+import javax.persistence.OneToMany;
 
 import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
@@ -27,19 +28,20 @@ public class User implements Serializable{
 	@Id
 	private String id;
 	
-	@Indexed(unique=true)
+	@Indexed(unique=true, sparse=true)
 	private String email;
 	
 	private String firstName;
 	private String lastName;
 	private String phoneNum;
 	private String password;
-	private String latitude;
-	private String longitude;
+	private Double latitude = new Double(0);
+	private Double longitude = new Double(0);
 	
-	private List<String> alumns = new ArrayList<>();
-	private List<String> teachers = new ArrayList<>();
+	//private List<String> alumns = new ArrayList<>();
+	@OneToMany(fetch=FetchType.LAZY)
+	private Set<User> teachers = new HashSet<>();
 	
 	@ManyToMany(fetch=FetchType.LAZY)
-	private List<Skill> skills = new ArrayList<>();
+	private Set<Skill> skills = new HashSet<>();
 }

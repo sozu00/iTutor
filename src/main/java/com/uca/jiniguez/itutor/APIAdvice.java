@@ -12,7 +12,7 @@ import exception.InvalidDataException;
 import exception.NotFoundException;
 
 @ResponseBody
-@ControllerAdvice(basePackages = "com.uca.jiniguez.itutor.controller, com.uca.jiniguez.itutor.service")
+@ControllerAdvice(basePackages = "com.uca.jiniguez.itutor")
 public class APIAdvice {
 	@ExceptionHandler(NotFoundException.class)
 	@ResponseStatus(HttpStatus.NOT_FOUND)
@@ -22,7 +22,7 @@ public class APIAdvice {
 	
 	@ExceptionHandler(InvalidDataException.class)
 	@ResponseStatus(HttpStatus.BAD_REQUEST)
-	public ErrorDTO notInvalidData(InvalidDataException e) {
+	public ErrorDTO notValidData(InvalidDataException e) {
 		return new ErrorDTO(400, e.getMessage());
 	}
 }

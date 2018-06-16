@@ -1,6 +1,7 @@
 package com.uca.jiniguez.itutor.controller;
 
-import java.util.List;
+import java.util.Optional;
+import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -13,6 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.uca.jiniguez.itutor.model.User;
 import com.uca.jiniguez.itutor.service.UserService;
 
+import exception.InvalidDataException;
 import exception.NotFoundException;
 
 @RestController
@@ -23,15 +25,13 @@ public class UserController {
 	private UserService userService;
 	
 	@RequestMapping(method = {RequestMethod.GET})
-	public List<User> findUsers(
-			@RequestParam(required = false) String email,
-			@RequestParam(required = false) String pwd
+	public Set<User> findUsers(
+			@RequestParam(required=false)String skillName,
+			@RequestParam(required=false)double latitude,
+			@RequestParam(required=false)double longitude,
+			@RequestParam(required=false)double distance
 			) throws NotFoundException{
-		
-		if(email!=null)
-			return findByEmail(email, pwd);
-		else
-			return userService.findAll();
+		return userService.findFiltered(skillName, latitude, longitude, distance);
 	}
 	
 	@RequestMapping(method = {RequestMethod.GET}, value = "/{userID}")
@@ -54,32 +54,29 @@ public class UserController {
 		userService.delete(userID);
 	}
 	
-	private List<User> findByEmail(String email, String pwd){
+	@RequestMapping(method = {RequestMethod.GET}, value = "/login")
+	private Set<User> findByEmail(
+			@RequestParam(required = false) String email,
+			@RequestParam(required = false) String pwd) throws InvalidDataException{
+		Optional.ofNullable(email).orElseThrow(()->new InvalidDataException("email not present"));
+		Optional.ofNullable(pwd).orElseThrow(()->new InvalidDataException("pwd not present"));
 		return userService.validateEmail(email, pwd);
 	}
 	
-	@RequestMapping(method = {RequestMethod.GET}, value = "/{userID}/alumns")
-	public List<User> findAlumns(@PathVariable String userID) throws NotFoundException{
-		return userService.findAlumns(userID);
-	}
 	
 	@RequestMapping(method = {RequestMethod.PUT}, value = "/{userID}/addTeacher/{teacherID}")
 	public void addTeacher(@PathVariable String userID, @PathVariable String teacherID) throws NotFoundException {
 		userService.addTeacher(userID, teacherID);
 	}
 	
-	@RequestMapping(method = {RequestMethod.PUT}, value = "/{userID}/addAlumn/{alumnID}")
-	public void addAlumn(@PathVariable String userID, @PathVariable String alumnID) throws NotFoundException {
-		userService.addAlumn(userID, alumnID);
-	}
 	
 	@RequestMapping(method = {RequestMethod.PUT}, value = "/{userID}/removeTeacher/{teacherID}")
 	public void removeTeacher(@PathVariable String userID, @PathVariable String teacherID) throws NotFoundException {
 		userService.removeTeacher(userID, teacherID);
 	}
 	
-	@RequestMapping(method = {RequestMethod.PUT}, value = "/{userID}/removeAlumn/{alumnID}")
-	public void removeAlumn(@PathVariable String userID, @PathVariable String alumnID) throws NotFoundException {
-		userService.removeAlumn(userID, alumnID);
+	@RequestMapping(method = {RequestMethod.PUT}, value = "/{userID}/addSkill/{skillName}")
+	public void addSkill(@PathVariable String userID, @PathVariable String skillName) throws NotFoundException {
+		userService.addSkill(userID, skillName);
 	}
 }

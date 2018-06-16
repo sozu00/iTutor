@@ -1,13 +1,17 @@
 package com.uca.jiniguez.itutor.service.impl;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Optional;
+import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.uca.jiniguez.itutor.config.MathFunctions;
 import com.uca.jiniguez.itutor.dao.UserDAO;
+import com.uca.jiniguez.itutor.model.Skill;
 import com.uca.jiniguez.itutor.model.User;
+import com.uca.jiniguez.itutor.service.SkillService;
 import com.uca.jiniguez.itutor.service.UserService;
 
 import exception.NotFoundException;
@@ -18,35 +22,17 @@ public class UserServiceImpl implements UserService{
 	
 	@Autowired
 	private UserDAO userDAO;
-	
-	private void updateTeacherAlumn(final User result, boolean isToRemove) throws NotFoundException {
-		for(String a : result.getAlumns())
-			updateTeacher(a, result, isToRemove);
-		for(String t : result.getTeachers())
-			updateAlumn(t, result, isToRemove);
-	}
 
-	private void updateTeacher(String userID, final User teacher, boolean isToRemove) throws NotFoundException {
-		if(isToRemove) 
-			removeTeacher(userID, teacher.getId());
-		else
-			addTeacher(userID, teacher.getId());
-	}
-
-	private void updateAlumn(String userID, final User alumn, boolean isToRemove) throws NotFoundException {
-		if(isToRemove) 
-			removeAlumn(userID, alumn.getId());
-		else
-			addAlumn(userID, alumn.getId());
-	}
+	@Autowired
+	private SkillService skillService;
 	
 	@Override
-	public List<User> findAll() {
+	public Set<User> findAll() {
 		final Iterable<User> findAll = userDAO.findAll();
-		final List<User> finalList = new ArrayList<>();
-		findAll.forEach(a->finalList.add(a));
+		final Set<User> finalSet = new HashSet<>();
+		findAll.forEach(a->finalSet.add(a));
 		
-		return finalList;
+		return finalSet;
 	}
 
 	@Override
@@ -58,7 +44,6 @@ public class UserServiceImpl implements UserService{
 	@Override
 	public User create(User user) throws NotFoundException {
 		final User result = userDAO.save(user);
-		updateTeacherAlumn(result, false);
 		return result;
 	}
 	
@@ -66,8 +51,7 @@ public class UserServiceImpl implements UserService{
 	public void update(String id, User user) throws NotFoundException {
 		user.setId(id);
 		if(userDAO.existsById(id)) {
-			updateTeacherAlumn(userDAO.findById(id).orElseThrow(NotFoundException::new), true);
-			updateTeacherAlumn(userDAO.save(user), false);
+			userDAO.save(user);
 		}
 		else
 			throw new NotFoundException();
@@ -76,7 +60,6 @@ public class UserServiceImpl implements UserService{
 	@Override
 	public void delete(String id) throws NotFoundException {
 		if (userDAO.existsById(id)) {
-			updateTeacherAlumn(userDAO.findById(id).orElseThrow(NotFoundException::new), true);
 			userDAO.deleteById(id);
 		}
 		else
@@ -84,69 +67,83 @@ public class UserServiceImpl implements UserService{
 	}
 
 	@Override
-	public List<User> validateEmail(String email, String pwd) {
+	public Set<User> validateEmail(String email, String pwd) {
 		User a = userDAO.findByEmail(email);
-		final List<User> finalList = new ArrayList<>();
+		final Set<User> finalSet = new HashSet<>();
 		
 		if(a.getPassword() == null || a.getPassword().equals(pwd))
-			finalList.add(a);
+			finalSet.add(a);
 		
-		return finalList;
-	}
-
-	@Override
-	public List<User> findAlumns(String userId) throws NotFoundException {
-		final User a = userDAO.findById(userId).orElseThrow(NotFoundException::new);
-		final List<User> finalList = new ArrayList<>();
-		a.getAlumns().forEach(s->finalList.add(userDAO.findById(s).orElse(null)));
-		return finalList;
+		return finalSet;
 	}
 
 	@Override
 	public void addTeacher(String userID, String teacherID) throws NotFoundException {
 		User alumn = userDAO.findById(userID).orElseThrow(NotFoundException::new);
-		List<String> teachers = alumn.getTeachers();
-		if(!teachers.contains(teacherID)) {
-			teachers.add(teacherID);
+		User teacher = userDAO.findById(userID).orElseThrow(NotFoundException::new);
+		Set<User> teachers = alumn.getTeachers();
+		if(!teachers.contains(teacher)) {
+			teachers.add(teacher);
 			alumn.setTeachers(teachers);
 			userDAO.save(alumn);
-			addAlumn(teacherID,userID);
-		}
-	}
-	
-	@Override
-	public void addAlumn(String userID, String alumnID) throws NotFoundException {
-		User teacher = userDAO.findById(userID).orElseThrow(NotFoundException::new);
-		List<String> alumns = teacher.getAlumns();
-		if(!alumns.contains(alumnID)) {
-			alumns.add(alumnID);
-			teacher.setAlumns(alumns);
-			userDAO.save(teacher);
-			addTeacher(alumnID, userID);
 		}
 	}
 	
 	@Override
 	public void removeTeacher(String userID, String teacherID) throws NotFoundException {
 		User alumn = userDAO.findById(userID).orElseThrow(NotFoundException::new);
-		List<String> teachers = alumn.getTeachers();
-		if(teachers.contains(teacherID)) {
-			teachers.remove(teacherID);
+		User teacher = userDAO.findById(userID).orElseThrow(NotFoundException::new);
+		Set<User> teachers = alumn.getTeachers();
+		if(teachers.contains(teacher)) {
+			teachers.remove(teacher);
 			alumn.setTeachers(teachers);
 			userDAO.save(alumn);
-			removeAlumn(teacherID,userID);
 		}
 	}
 	
 	@Override
-	public void removeAlumn(String userID, String alumnID) throws NotFoundException {
-		User teacher = userDAO.findById(userID).orElseThrow(NotFoundException::new);
-		List<String> alumns = teacher.getAlumns();
-		if(alumns.contains(alumnID)) {
-			alumns.remove(alumnID);
-			teacher.setAlumns(alumns);
-			userDAO.save(teacher);
-			removeTeacher(alumnID, userID);
+	public void addSkill(String userID, String skillName) throws NotFoundException {
+		User user = userDAO.findById(userID).orElseThrow(NotFoundException::new);
+		Skill skill = skillService.findBySkillName(skillName);
+		
+		if(skill == null)
+			skill = skillService.create(new Skill(skillName));
+		
+		Set<Skill> skills = user.getSkills();
+		if(!skills.contains(skill)) {
+			skills.add(skill);
+			user.setSkills(skills);
+			userDAO.save(user);
+			skillService.addUser(skill, user);
 		}
 	}
+
+	@Override
+	public Set<User> findFiltered(String skillName, double lat, double lon, double distance) {
+		Set<User> skillFilter = new HashSet<>();
+		if(skillName!= null) {
+			Skill skill = skillService.findBySkillName(skillName);
+			if(skill != null)
+				skillFilter = skill.getTeachers(); 
+		}else
+			skillFilter = findAll();
+		
+		final Set<User> finalSet = new HashSet<>();
+		
+		for(User u : skillFilter) {
+			if(lat==0 || lon== 0)
+				finalSet.add(u);
+			else 
+				if (MathFunctions.distance(
+						lat, 
+						lon, 
+						u.getLatitude(), 
+						u.getLongitude()
+					) < distance)
+					finalSet.add(u);
+		}
+		
+		return finalSet;
+	}
+	
 }
