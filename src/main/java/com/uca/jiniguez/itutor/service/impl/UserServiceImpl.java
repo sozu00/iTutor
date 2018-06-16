@@ -1,4 +1,4 @@
-package com.uca.jiniguez.itutor.service;
+package com.uca.jiniguez.itutor.service.impl;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 
 import com.uca.jiniguez.itutor.dao.UserDAO;
 import com.uca.jiniguez.itutor.model.User;
+import com.uca.jiniguez.itutor.service.UserService;
 
 import exception.NotFoundException;
 

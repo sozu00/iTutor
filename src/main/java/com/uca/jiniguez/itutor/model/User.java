@@ -4,9 +4,10 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.persistence.Column;
+import javax.persistence.FetchType;
+import javax.persistence.Id;
+import javax.persistence.ManyToMany;
 
-import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 
@@ -33,7 +34,12 @@ public class User implements Serializable{
 	private String lastName;
 	private String phoneNum;
 	private String password;
+	private String latitude;
+	private String longitude;
 	
 	private List<String> alumns = new ArrayList<>();
 	private List<String> teachers = new ArrayList<>();
+	
+	@ManyToMany(fetch=FetchType.LAZY)
+	private List<Skill> skills = new ArrayList<>();
 }
