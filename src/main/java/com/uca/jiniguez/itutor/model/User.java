@@ -22,7 +22,7 @@ public class User implements Serializable{
 
 	public User() {}
 	public User(String firstName) {
-		this.firstName=firstName;
+		this.name=firstName;
 	}
 	
 	@Id
@@ -31,10 +31,10 @@ public class User implements Serializable{
 	@Indexed(unique=true, sparse=true)
 	private String email;
 	
-	private String firstName;
-	private String lastName;
+	private String name;
 	private String phoneNum;
 	private String password;
+	private String quote;
 	private Double latitude = new Double(0);
 	private Double longitude = new Double(0);
 	
