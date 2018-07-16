@@ -62,7 +62,7 @@ public class SkillServiceImp implements SkillService {
 	@Override
 	public Set<Skill> findByRegexSkillName(String skillName) {
 		Set<Skill> skills = new HashSet<>();
-		skills = skillDAO.findBySkillNameLike(skillName);
+		skills = skillDAO.findBySkillNameLike(skillName.toLowerCase());
 		return skills;
 	}
 	
