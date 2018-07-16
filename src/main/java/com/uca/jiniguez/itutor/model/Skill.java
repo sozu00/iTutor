@@ -33,5 +33,5 @@ public class Skill implements Serializable{
 	private String skillName;
 	
 	@ManyToMany(fetch=FetchType.LAZY)
-	private Set<User> teachers = new HashSet<>();
+	private Set<String> teachers = new HashSet<>();
 }

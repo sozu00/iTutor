@@ -27,9 +27,9 @@ public class UserController {
 	@RequestMapping(method = {RequestMethod.GET})
 	public Set<User> findUsers(
 			@RequestParam(required=false)String skillName,
-			@RequestParam(required=false)double latitude,
-			@RequestParam(required=false)double longitude,
-			@RequestParam(required=false)double distance
+			@RequestParam(required=false)Double latitude,
+			@RequestParam(required=false)Double longitude,
+			@RequestParam(required=false)Double distance
 			) throws NotFoundException{
 		return userService.findFiltered(skillName, latitude, longitude, distance);
 	}
@@ -57,7 +57,7 @@ public class UserController {
 	@RequestMapping(method = {RequestMethod.GET}, value = "/login")
 	private Set<User> findByEmail(
 			@RequestParam(required = false) String email,
-			@RequestParam(required = false) String pwd) throws InvalidDataException{
+			@RequestParam(required = false) String pwd) throws InvalidDataException, NotFoundException{
 		Optional.ofNullable(email).orElseThrow(()->new InvalidDataException("email not present"));
 		Optional.ofNullable(pwd).orElseThrow(()->new InvalidDataException("pwd not present"));
 		return userService.validateEmail(email, pwd);

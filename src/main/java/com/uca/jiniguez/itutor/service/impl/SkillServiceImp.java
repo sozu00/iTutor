@@ -74,9 +74,9 @@ public class SkillServiceImp implements SkillService {
 
 	@Override
 	public void addUser(Skill skill, User user) {
-		Set<User> teachers = skill.getTeachers(); 
-		if(!teachers.contains(user)) {
-			teachers.add(user);
+		Set<String> teachers = skill.getTeachers(); 
+		if(!teachers.contains(user.getId())) {
+			teachers.add(user.getId());
 			skill.setTeachers(teachers);
 			skillDAO.save(skill);
 		}

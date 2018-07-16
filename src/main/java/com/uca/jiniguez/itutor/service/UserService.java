@@ -13,9 +13,9 @@ public interface UserService {
 	User create(User user) throws NotFoundException;
 	void update(String id, User user) throws NotFoundException;
 	void delete(String id) throws NotFoundException;
-	Set<User> validateEmail(String email, String pwd);
+	Set<User> validateEmail(String email, String pwd) throws NotFoundException;
 	void addTeacher(String userID, String teacherID) throws NotFoundException;
 	void removeTeacher(String userID, String teacherID) throws NotFoundException;
 	void addSkill(String userID, String skillName) throws NotFoundException;
-	Set<User> findFiltered(String skillName, double lat, double lon, double distance);
+	Set<User> findFiltered(String skillName, Double lat, Double lon, Double distance);
 }

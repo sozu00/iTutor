@@ -35,12 +35,12 @@ public class User implements Serializable{
 	private String phoneNum;
 	private String password;
 	private String quote;
-	private Double latitude = new Double(0);
-	private Double longitude = new Double(0);
+	private Double latitude;
+	private Double longitude;
 	
 	//private List<String> alumns = new ArrayList<>();
 	@OneToMany(fetch=FetchType.LAZY)
-	private Set<User> teachers = new HashSet<>();
+	private Set<String> teachers = new HashSet<>();
 	
 	@ManyToMany(fetch=FetchType.LAZY)
 	private Set<Skill> skills = new HashSet<>();

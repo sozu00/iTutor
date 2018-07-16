@@ -1,6 +1,8 @@
 package com.uca.jiniguez.itutor.service.impl;
 
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
@@ -37,12 +39,26 @@ public class UserServiceImpl implements UserService{
 
 	@Override
 	public User findById(String id) throws NotFoundException {
+		
 		final User a = userDAO.findById(id).orElseThrow(NotFoundException::new);
 		return a;
 	}
 
 	@Override
 	public User create(User user) throws NotFoundException {
+		Set<Skill> newSkills = new HashSet<>();
+		for(Skill s : user.getSkills()) {
+			Set<Skill> a = skillService.findByRegexSkillName(s.getSkillName());
+			Skill newSkill;
+			try {
+				newSkill = a.iterator().next();
+			}catch(Exception e){
+				newSkill = skillService.create(s);
+			}
+			skillService.addUser(newSkill, user);
+			newSkills.add(newSkill);
+		}
+		user.setSkills(newSkills);
 		final User result = userDAO.save(user);
 		return result;
 	}
@@ -51,6 +67,19 @@ public class UserServiceImpl implements UserService{
 	public void update(String id, User user) throws NotFoundException {
 		user.setId(id);
 		if(userDAO.existsById(id)) {
+			Set<Skill> newSkills = new HashSet<>();
+			for(Skill s : user.getSkills()) {
+				Set<Skill> a = skillService.findByRegexSkillName(s.getSkillName());
+				Skill newSkill;
+				try {
+					newSkill = a.iterator().next();
+				}catch(Exception e){
+					newSkill = skillService.create(s);
+				}
+				skillService.addUser(newSkill, user);
+				newSkills.add(newSkill);
+			}
+			user.setSkills(newSkills);
 			userDAO.save(user);
 		}
 		else
@@ -67,13 +96,14 @@ public class UserServiceImpl implements UserService{
 	}
 
 	@Override
-	public Set<User> validateEmail(String email, String pwd) {
+	public Set<User> validateEmail(String email, String pwd) throws NotFoundException{
 		User a = userDAO.findByEmail(email);
 		final Set<User> finalSet = new HashSet<>();
 		
 		if(a.getPassword() == null || a.getPassword().equals(pwd))
 			finalSet.add(a);
-		
+		else
+			throw new NotFoundException();
 		return finalSet;
 	}
 
@@ -81,9 +111,9 @@ public class UserServiceImpl implements UserService{
 	public void addTeacher(String userID, String teacherID) throws NotFoundException {
 		User alumn = userDAO.findById(userID).orElseThrow(NotFoundException::new);
 		User teacher = userDAO.findById(userID).orElseThrow(NotFoundException::new);
-		Set<User> teachers = alumn.getTeachers();
+		Set<String> teachers = alumn.getTeachers();
 		if(!teachers.contains(teacher)) {
-			teachers.add(teacher);
+			teachers.add(teacherID);
 			alumn.setTeachers(teachers);
 			userDAO.save(alumn);
 		}
@@ -92,10 +122,9 @@ public class UserServiceImpl implements UserService{
 	@Override
 	public void removeTeacher(String userID, String teacherID) throws NotFoundException {
 		User alumn = userDAO.findById(userID).orElseThrow(NotFoundException::new);
-		User teacher = userDAO.findById(userID).orElseThrow(NotFoundException::new);
-		Set<User> teachers = alumn.getTeachers();
-		if(teachers.contains(teacher)) {
-			teachers.remove(teacher);
+		Set<String> teachers = alumn.getTeachers();
+		if(teachers.contains(teacherID)) {
+			teachers.remove(teacherID);
 			alumn.setTeachers(teachers);
 			userDAO.save(alumn);
 		}
@@ -119,19 +148,21 @@ public class UserServiceImpl implements UserService{
 	}
 
 	@Override
-	public Set<User> findFiltered(String skillName, double lat, double lon, double distance) {
-		Set<User> skillFilter = new HashSet<>();
+	public Set<User> findFiltered(String skillName, Double lat, Double lon, Double distance) {
+		final Set<User> skillFilter;
 		if(skillName!= null) {
+			skillFilter = new HashSet<>();
 			Skill skill = skillService.findBySkillName(skillName);
-			if(skill != null)
-				skillFilter = skill.getTeachers(); 
+			if(skill != null) {
+				skill.getTeachers().forEach(s->skillFilter.add(userDAO.findById(s).get()));
+			}
 		}else
 			skillFilter = findAll();
 		
 		final Set<User> finalSet = new HashSet<>();
 		
 		for(User u : skillFilter) {
-			if(lat==0 || lon== 0)
+			if(lat==null || lon==null)
 				finalSet.add(u);
 			else 
 				if (MathFunctions.distance(
