@@ -1,7 +1,9 @@
 package com.uca.jiniguez.itutor.model;
 
 import java.io.Serializable;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 
 import javax.persistence.FetchType;

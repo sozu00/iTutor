@@ -1,9 +1,7 @@
 package com.uca.jiniguez.itutor.service.impl;
 
-import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.List;
-import java.util.Optional;
+import java.util.Map;
 import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,6 +11,7 @@ import com.uca.jiniguez.itutor.config.MathFunctions;
 import com.uca.jiniguez.itutor.dao.UserDAO;
 import com.uca.jiniguez.itutor.model.Skill;
 import com.uca.jiniguez.itutor.model.User;
+import com.uca.jiniguez.itutor.model.Vote;
 import com.uca.jiniguez.itutor.service.SkillService;
 import com.uca.jiniguez.itutor.service.UserService;
 
@@ -98,6 +97,8 @@ public class UserServiceImpl implements UserService{
 	@Override
 	public Set<User> validateEmail(String email, String pwd) throws NotFoundException{
 		User a = userDAO.findByEmail(email);
+		if(a == null)
+			throw new NotFoundException();
 		final Set<User> finalSet = new HashSet<>();
 		
 		if(a.getPassword() == null || a.getPassword().equals(pwd))
@@ -176,5 +177,4 @@ public class UserServiceImpl implements UserService{
 		
 		return finalSet;
 	}
-	
 }

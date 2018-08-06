@@ -3,6 +3,7 @@ package com.uca.jiniguez.itutor.service;
 import java.util.Set;
 
 import com.uca.jiniguez.itutor.model.User;
+import com.uca.jiniguez.itutor.model.Vote;
 
 import exception.NotFoundException;
 
