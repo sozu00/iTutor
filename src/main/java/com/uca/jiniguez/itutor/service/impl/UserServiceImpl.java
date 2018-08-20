@@ -175,7 +175,7 @@ public class UserServiceImpl implements UserService{
 	}
 
 	private boolean checkRating(User u, Integer rating) {
-		return (rating == null) || (voteService.getRating(u.getId()).intValue() > rating);
+		return (rating == null) || (voteService.getRating(u.getId()).intValue() >= rating);
 	}
 
 	@Override

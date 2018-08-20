@@ -17,6 +17,7 @@ public class Vote implements Serializable{
 	public Vote() {}
 	
 	private String voterUser;
+	private String voterName;
 	private String receivingUser;
 	private String comment;
 	private Integer rating;

@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.uca.jiniguez.itutor.model.Vote;
 import com.uca.jiniguez.itutor.service.VoteService;
 
+import exception.InvalidDataException;
 import exception.NotFoundException;
 
 @RestController
@@ -22,7 +23,7 @@ public class VoteController {
 	private VoteService voteService;
 	
 	@RequestMapping(method = {RequestMethod.POST})
-	public void vote(@RequestBody Vote vote) throws NotFoundException {
+	public void vote(@RequestBody Vote vote) throws NotFoundException, InvalidDataException {
 		voteService.create(vote);
 	}
 	

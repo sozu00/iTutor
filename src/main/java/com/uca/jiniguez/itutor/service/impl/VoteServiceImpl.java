@@ -9,6 +9,7 @@ import com.uca.jiniguez.itutor.dao.VoterDAO;
 import com.uca.jiniguez.itutor.model.Vote;
 import com.uca.jiniguez.itutor.service.VoteService;
 
+import exception.InvalidDataException;
 import exception.NotFoundException;
 
 
@@ -19,10 +20,18 @@ public class VoteServiceImpl implements VoteService{
 	private VoterDAO voterDAO;
 
 	@Override
-	public void create(Vote vote) throws NotFoundException{
+	public void create(Vote vote) throws NotFoundException, InvalidDataException{
 		try {
+			Set<Vote> votesReceived = findByUser(vote.getReceivingUser());
+			for(Vote v : votesReceived) {
+				if(v.getVoterUser().equals(vote.getVoterUser()))
+					throw new InvalidDataException("Este usuario ya ha sido votado");
+			}
+			
 			voterDAO.save(vote);
-		}catch(Exception e) {throw new NotFoundException();}
+		}
+		catch(InvalidDataException e) {throw e;}
+		catch(Exception e) {throw new NotFoundException();}
 	}
 
 	@Override
