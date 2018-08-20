@@ -29,34 +29,9 @@ public class SkillServiceImp implements SkillService {
 	}
 
 	@Override
-	public Skill findById(String id) throws NotFoundException {
-		final Skill a = skillDAO.findById(id).orElseThrow(NotFoundException::new);
-		return a;
-	}
-
-	@Override
 	public Skill create(Skill skill) throws NotFoundException {
 		final Skill result = skillDAO.save(skill);
 		return result;
-	}
-
-	@Override
-	public void update(String id, Skill skill) throws NotFoundException {
-		skill.setId(id);
-		if(skillDAO.existsById(id)) {
-			skillDAO.save(skill);
-		}
-		else
-			throw new NotFoundException();
-	}
-
-	@Override
-	public void delete(String id) throws NotFoundException {
-		if (skillDAO.existsById(id)) {
-			skillDAO.deleteById(id);
-		}
-		else
-			throw new NotFoundException();
 	}
 
 	@Override
@@ -68,7 +43,7 @@ public class SkillServiceImp implements SkillService {
 	
 	@Override
 	public Skill findBySkillName(String skillName) {
-		Skill skill = skillDAO.findBySkillName(skillName);
+		Skill skill = skillDAO.findBySkillName(skillName.toLowerCase());
 		return skill;
 	}
 
@@ -80,5 +55,19 @@ public class SkillServiceImp implements SkillService {
 			skill.setTeachers(teachers);
 			skillDAO.save(skill);
 		}
+	}
+
+	@Override
+	public void removeUser(Skill skill, User user) {
+		Set<String> teachers = skill.getTeachers();
+		if(teachers.contains(user.getId())) {
+			teachers.remove(user.getId());
+			skill.setTeachers(teachers);
+			if(teachers.size() == 0)
+				skillDAO.delete(skill);
+			else
+				skillDAO.save(skill);
+		}
+		
 	}
 }

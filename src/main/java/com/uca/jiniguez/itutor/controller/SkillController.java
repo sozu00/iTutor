@@ -29,24 +29,4 @@ public class SkillController {
 		else
 			return skillService.findAll();
 	}
-	
-	@RequestMapping(method = {RequestMethod.GET}, value = "/{skillID}")
-	public Skill findById(@PathVariable String skillID) throws NotFoundException {
-		return skillService.findById(skillID);
-	}
-	
-	@RequestMapping(method = {RequestMethod.POST})
-	public Skill create(@RequestBody Skill skill) throws NotFoundException {
-		return skillService.create(skill);
-	}
-	
-	@RequestMapping(method = {RequestMethod.PUT}, value = "/{skillID}")
-	public void update(@PathVariable String skillID, @RequestBody Skill skill) throws NotFoundException {
-		skillService.update(skillID, skill);
-	}
-	
-	@RequestMapping(method = {RequestMethod.DELETE}, value = "/{skillID}")
-	public void delete(@PathVariable String skillID) throws NotFoundException {
-		skillService.delete(skillID);
-	}
 }

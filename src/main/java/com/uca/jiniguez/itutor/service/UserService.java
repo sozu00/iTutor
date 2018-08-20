@@ -18,5 +18,7 @@ public interface UserService {
 	void addTeacher(String userID, String teacherID) throws NotFoundException;
 	void removeTeacher(String userID, String teacherID) throws NotFoundException;
 	void addSkill(String userID, String skillName) throws NotFoundException;
-	Set<User> findFiltered(String skillName, Double lat, Double lon, Double distance);
+	void removeSkill(String userID, String skillName) throws NotFoundException;
+	Set<User> findFiltered(String skillName, Double lat, Double lon, Double distance, Integer minimumRating);
+
 }

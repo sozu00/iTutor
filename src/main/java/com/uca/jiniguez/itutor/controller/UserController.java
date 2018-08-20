@@ -29,9 +29,10 @@ public class UserController {
 			@RequestParam(required=false)String skillName,
 			@RequestParam(required=false)Double latitude,
 			@RequestParam(required=false)Double longitude,
-			@RequestParam(required=false)Double distance
+			@RequestParam(required=false)Double distance,
+			@RequestParam(required=false)Integer minimumRating
 			) throws NotFoundException{
-		return userService.findFiltered(skillName, latitude, longitude, distance);
+		return userService.findFiltered(skillName, latitude, longitude, distance, minimumRating);
 	}
 	
 	@RequestMapping(method = {RequestMethod.GET}, value = "/{userID}")
@@ -79,4 +80,9 @@ public class UserController {
 	public void addSkill(@PathVariable String userID, @PathVariable String skillName) throws NotFoundException {
 		userService.addSkill(userID, skillName);
 	}
+	@RequestMapping(method = {RequestMethod.PUT}, value = "/{userID}/removeSkill/{skillName}")
+	public void removeSkill(@PathVariable String userID, @PathVariable String skillName) throws NotFoundException {
+		userService.removeSkill(userID, skillName);
+	}
+	
 }

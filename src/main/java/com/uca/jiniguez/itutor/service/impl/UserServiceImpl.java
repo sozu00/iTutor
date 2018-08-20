@@ -1,7 +1,6 @@
 package com.uca.jiniguez.itutor.service.impl;
 
 import java.util.HashSet;
-import java.util.Map;
 import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,9 +10,9 @@ import com.uca.jiniguez.itutor.config.MathFunctions;
 import com.uca.jiniguez.itutor.dao.UserDAO;
 import com.uca.jiniguez.itutor.model.Skill;
 import com.uca.jiniguez.itutor.model.User;
-import com.uca.jiniguez.itutor.model.Vote;
 import com.uca.jiniguez.itutor.service.SkillService;
 import com.uca.jiniguez.itutor.service.UserService;
+import com.uca.jiniguez.itutor.service.VoteService;
 
 import exception.NotFoundException;
 
@@ -26,6 +25,9 @@ public class UserServiceImpl implements UserService{
 
 	@Autowired
 	private SkillService skillService;
+	
+	@Autowired
+	private VoteService	voteService;
 	
 	@Override
 	public Set<User> findAll() {
@@ -149,32 +151,47 @@ public class UserServiceImpl implements UserService{
 	}
 
 	@Override
-	public Set<User> findFiltered(String skillName, Double lat, Double lon, Double distance) {
+	public Set<User> findFiltered(String skillName, Double lat, Double lon, Double distance, Integer minimumRating) {
 		final Set<User> skillFilter;
+		final Set<User> finalSet = new HashSet<>();
 		if(skillName!= null) {
 			skillFilter = new HashSet<>();
 			Skill skill = skillService.findBySkillName(skillName);
-			if(skill != null) {
+			if(skill != null)
 				skill.getTeachers().forEach(s->skillFilter.add(userDAO.findById(s).get()));
-			}
 		}else
 			skillFilter = findAll();
 		
-		final Set<User> finalSet = new HashSet<>();
-		
-		for(User u : skillFilter) {
-			if(lat==null || lon==null)
+		for(User u : skillFilter)
+			if(checkRating(u, minimumRating) && checkDistance(u, lat, lon, distance))
 				finalSet.add(u);
-			else 
-				if (MathFunctions.distance(
-						lat, 
-						lon, 
-						u.getLatitude(), 
-						u.getLongitude()
-					) < distance)
-					finalSet.add(u);
-		}
 		
 		return finalSet;
+	}
+	
+	private boolean checkDistance(User u, Double lat, Double lon, Double distance) {
+		return (lat==null || lon==null) 
+				|| (MathFunctions.distance(lat, lon, u.getLatitude(),u.getLongitude()) < distance);
+	}
+
+	private boolean checkRating(User u, Integer rating) {
+		return (rating == null) || (voteService.getRating(u.getId()).intValue() > rating);
+	}
+
+	@Override
+	public void removeSkill(String userID, String skillName) throws NotFoundException {
+		User user = userDAO.findById(userID).orElseThrow(NotFoundException::new);
+		Skill skill = skillService.findBySkillName(skillName);
+		
+		if(skill == null)
+			return;
+		
+		Set<Skill> skills = user.getSkills();
+		if(skills.contains(skill)) {
+			skills.remove(skill);
+			user.setSkills(skills);
+			userDAO.save(user);
+			skillService.removeUser(skill, user);
+		}
 	}
 }
