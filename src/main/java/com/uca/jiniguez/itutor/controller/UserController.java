@@ -31,9 +31,9 @@ public class UserController {
 			@RequestParam(required=false)Integer minimumRating,
 			@RequestParam(required=false)Double maxPrice,
 			@RequestParam(required=false)Integer formation,
-			@RequestParam(required=false)List<Boolean> levels
+			@RequestParam(required=false)List<Boolean> level
 			) throws NotFoundException{
-		return userService.findFiltered(skillName, minimumRating, maxPrice, formation, levels);
+		return userService.findFiltered(skillName, minimumRating, maxPrice, formation, level);
 	}
 	
 	@RequestMapping(method = {RequestMethod.GET}, value = "/{userID}")

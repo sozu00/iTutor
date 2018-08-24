@@ -2,6 +2,7 @@ package com.uca.jiniguez.itutor.model;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -39,13 +40,10 @@ public class User implements Serializable{
 	private String phoneNum;
 	private String password;
 	private String quote;
-	private Double latitude;
-	private Double longitude;
-	private Double price;
-	private List<Boolean> levels = new ArrayList<>();
-	private Integer formation;
+	private Double price = 0.0;
+	private List<Boolean> levels = new ArrayList<>(Arrays.asList(false,false,false,false));
+	private Integer formation = 1;
 	
-	//private List<String> alumns = new ArrayList<>();
 	@OneToMany(fetch=FetchType.LAZY)
 	private Set<String> teachers = new HashSet<>();
 	

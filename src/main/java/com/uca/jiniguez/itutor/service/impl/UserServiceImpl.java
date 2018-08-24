@@ -2,6 +2,7 @@ package com.uca.jiniguez.itutor.service.impl;
 
 import java.util.HashSet;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -174,7 +175,7 @@ public class UserServiceImpl implements UserService{
 
 	@Override
 	public Set<User> findFiltered(String skillName, Integer minimumRating, Double maxPrice,
-			Integer formation, List<Boolean> levels) {
+			Integer formation, List<Boolean> level) {
 		final Set<User> skillFilter;
 		final Set<User> finalSet = new HashSet<>();
 		if(skillName!= null) {
@@ -186,10 +187,12 @@ public class UserServiceImpl implements UserService{
 			skillFilter = findAll();
 		
 		for(User u : skillFilter)
-			if(checkRating(u, minimumRating) && u.getPrice() <= maxPrice & u.getFormation() == formation) {
-				for (int i = 0; i < levels.size(); i++) {
-					if(levels.get(i) && u.getLevels().get(i))
+			if(checkRating(u, minimumRating) && u.getPrice() <= Optional.ofNullable(maxPrice).orElse(99.0)& u.getFormation() == formation) {
+				for (int i = 0; i < level.size(); i++) {
+					if(level.get(i) && u.getLevels().get(i)) {
 						finalSet.add(u);
+						break;
+					}
 				}
 			}
 		
