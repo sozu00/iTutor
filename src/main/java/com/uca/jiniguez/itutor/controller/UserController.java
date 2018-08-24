@@ -1,5 +1,6 @@
 package com.uca.jiniguez.itutor.controller;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
@@ -27,12 +28,12 @@ public class UserController {
 	@RequestMapping(method = {RequestMethod.GET})
 	public Set<User> findUsers(
 			@RequestParam(required=false)String skillName,
-			@RequestParam(required=false)Double latitude,
-			@RequestParam(required=false)Double longitude,
-			@RequestParam(required=false)Double distance,
-			@RequestParam(required=false)Integer minimumRating
+			@RequestParam(required=false)Integer minimumRating,
+			@RequestParam(required=false)Double maxPrice,
+			@RequestParam(required=false)Integer formation,
+			@RequestParam(required=false)List<Boolean> levels
 			) throws NotFoundException{
-		return userService.findFiltered(skillName, latitude, longitude, distance, minimumRating);
+		return userService.findFiltered(skillName, minimumRating, maxPrice, formation, levels);
 	}
 	
 	@RequestMapping(method = {RequestMethod.GET}, value = "/{userID}")

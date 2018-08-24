@@ -1,6 +1,7 @@
 package com.uca.jiniguez.itutor.service.impl;
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -150,30 +151,6 @@ public class UserServiceImpl implements UserService{
 		}
 	}
 
-	@Override
-	public Set<User> findFiltered(String skillName, Double lat, Double lon, Double distance, Integer minimumRating) {
-		final Set<User> skillFilter;
-		final Set<User> finalSet = new HashSet<>();
-		if(skillName!= null) {
-			skillFilter = new HashSet<>();
-			Skill skill = skillService.findBySkillName(skillName);
-			if(skill != null)
-				skill.getTeachers().forEach(s->skillFilter.add(userDAO.findById(s).get()));
-		}else
-			skillFilter = findAll();
-		
-		for(User u : skillFilter)
-			if(checkRating(u, minimumRating) && checkDistance(u, lat, lon, distance))
-				finalSet.add(u);
-		
-		return finalSet;
-	}
-	
-	private boolean checkDistance(User u, Double lat, Double lon, Double distance) {
-		return (lat==null || lon==null) 
-				|| (MathFunctions.distance(lat, lon, u.getLatitude(),u.getLongitude()) < distance);
-	}
-
 	private boolean checkRating(User u, Integer rating) {
 		return (rating == null) || (voteService.getRating(u.getId()).intValue() >= rating);
 	}
@@ -193,5 +170,29 @@ public class UserServiceImpl implements UserService{
 			userDAO.save(user);
 			skillService.removeUser(skill, user);
 		}
+	}
+
+	@Override
+	public Set<User> findFiltered(String skillName, Integer minimumRating, Double maxPrice,
+			Integer formation, List<Boolean> levels) {
+		final Set<User> skillFilter;
+		final Set<User> finalSet = new HashSet<>();
+		if(skillName!= null) {
+			skillFilter = new HashSet<>();
+			Skill skill = skillService.findBySkillName(skillName);
+			if(skill != null)
+				skill.getTeachers().forEach(s->skillFilter.add(userDAO.findById(s).get()));
+		}else
+			skillFilter = findAll();
+		
+		for(User u : skillFilter)
+			if(checkRating(u, minimumRating) && u.getPrice() <= maxPrice & u.getFormation() == formation) {
+				for (int i = 0; i < levels.size(); i++) {
+					if(levels.get(i) && u.getLevels().get(i))
+						finalSet.add(u);
+				}
+			}
+		
+		return finalSet;
 	}
 }

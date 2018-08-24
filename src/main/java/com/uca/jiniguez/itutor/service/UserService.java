@@ -1,5 +1,6 @@
 package com.uca.jiniguez.itutor.service;
 
+import java.util.List;
 import java.util.Set;
 
 import com.uca.jiniguez.itutor.model.User;
@@ -19,6 +20,6 @@ public interface UserService {
 	void removeTeacher(String userID, String teacherID) throws NotFoundException;
 	void addSkill(String userID, String skillName) throws NotFoundException;
 	void removeSkill(String userID, String skillName) throws NotFoundException;
-	Set<User> findFiltered(String skillName, Double lat, Double lon, Double distance, Integer minimumRating);
+	Set<User> findFiltered(String skillName, Integer minimumRating, Double maxPrice, Integer formation, List<Boolean> levels);
 
 }
