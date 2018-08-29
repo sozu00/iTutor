@@ -2,8 +2,6 @@ package com.uca.jiniguez.itutor.model;
 
 import java.io.Serializable;
 
-import org.springframework.data.mongodb.core.index.CompoundIndex;
-import org.springframework.data.mongodb.core.index.CompoundIndexes;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import lombok.Data;

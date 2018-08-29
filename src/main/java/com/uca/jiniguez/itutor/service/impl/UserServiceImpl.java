@@ -8,7 +8,6 @@ import java.util.Set;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.uca.jiniguez.itutor.config.MathFunctions;
 import com.uca.jiniguez.itutor.dao.UserDAO;
 import com.uca.jiniguez.itutor.model.Skill;
 import com.uca.jiniguez.itutor.model.User;
@@ -112,6 +111,7 @@ public class UserServiceImpl implements UserService{
 		return finalSet;
 	}
 
+	@SuppressWarnings("unlikely-arg-type")
 	@Override
 	public void addTeacher(String userID, String teacherID) throws NotFoundException {
 		User alumn = userDAO.findById(userID).orElseThrow(NotFoundException::new);
